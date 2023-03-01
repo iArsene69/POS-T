@@ -187,6 +187,9 @@ return [
              */
         Milon\Barcode\BarcodeServiceProvider::class,
 
+        
+        
+
             /*
              * Application Service Providers...
              */

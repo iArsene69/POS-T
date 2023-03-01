@@ -66,8 +66,8 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Product's Name</label>
-                                        <input type="text" class="form-control text-light" id="nameProd"
-                                            name="nameProd" placeholder="Product's Name">
+                                        <input type="text" class="form-control text-light" id="nameProd" name="nameProd"
+                                            placeholder="Product's Name">
                                     </div>
                                     <div class="form-group">
                                         <label for="exampleInputPassword1">Buying Price</label>
@@ -109,5 +109,32 @@
             // Use above variables to manipulate the DOM
         });
     </script>
+    @if(session()->has('success'))
+    <script>
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            icon: 'success',
+            title: '{{ Session::get('success') }}'
+        });
+    </script>
+@else
+    @if (session()->has('errors'))
+        <script>
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                icon: 'error',
+                title: '{{ Session::get('errors') }}'
+            });
+        </script>
+    @endif
+@endif
     @endpush
 </x-layout.app>

@@ -8,5 +8,10 @@
         "axios": "^1.1.2",
         "laravel-vite-plugin": "^0.7.2",
         "vite": "^4.0.0"
+    },
+    "dependencies": {
+        "@sweetalert2/theme-borderless": "^5.0.15",
+        "@sweetalert2/themes": "^5.0.15",
+        "sweetalert2": "^11.7.3"
     }
 }
