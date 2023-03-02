@@ -17,23 +17,26 @@
                         <table class="table table-hover">
                             <thead>
                                 <tr>
-                                    <th>Check</th>
                                     <th>Product's Code</th>
                                     <th>Product's Name</th>
                                     <th>Buying Price</th>
                                     <th>Selling Price</th>
                                     <th>Stock</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($product as $item)
                                 <tr>
-                                    <td></td>
                                     <td>{{ $item->prodCode }}</td>
                                     <td>{{ $item->nameProd }}</td>
                                     <td>{{ $item->buyPrice }}</td>
                                     <td>{{ $item->sellPrice }}</td>
                                     <td>{{ $item->stock }}</td>
+                                    <td>
+                                        <button type="submit" class="btn btn-primary btn-icon"><i class="mdi mdi-pencil-outline icon-sm"></i></button>
+                                        <button type="submit" class="btn btn-danger btn-icon"><i class="mdi mdi-delete icon-sm"></i></button>
+                                    </td>
                                 </tr>
                                 @endforeach
                             </tbody>
@@ -49,7 +52,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalTitleId">New Products</h5>
+                    <h5 class="modal-title" id="modalTitleId"><i class="mdi mdi-table text-warning icon-md"></i> New Products</h5>
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal" aria-label="Close"><i
                             class="mdi mdi-window-close"></i></button>
                 </div>
@@ -87,7 +90,7 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
                                 <button type="submit" class="btn btn-success">Save</button>
                             </div>
                         </form>
@@ -138,42 +141,69 @@
     @endif
     <script>
         function requestCamera() {
-    navigator.mediaDevices.getUserMedia({ video: true })
-    .then(function(stream) {
-        const video = document.querySelector('#video');
-        video.srcObject = stream;
-        video.play();
-    })
-    .catch(function(err) {
-        console.error('Error:', err);
-    });
-}
-window.addEventListener('load', function() {
-    requestCamera();
-});
-
-Quagga.init({
-    inputStream : {
-        name : "Live",
-        type : "LiveStream",
-        target: document.querySelector('#video')
-    },
-    decoder : {
-        readers : ["ean_reader"]
-    }
-}, function(err) {
-    if (err) {
-        console.error('Error:', err);
-        return;
-    }
-    console.log('Quagga initialization succeeded');
-    Quagga.start();
-});
-
-Quagga.onDetected(function(result) {
-    console.log('Barcode detected and processed : [' + result.codeResult.code + ']', result);
-    document.querySelector('#prodCode').value = result.codeResult.code;
-});
-    </script>
+          navigator.mediaDevices.getUserMedia({ video: true })
+            .then(function(stream) {
+              const video = document.querySelector('#video');
+              video.srcObject = stream;
+              video.play();
+            })
+            .catch(function(err) {
+              console.error('Error:', err);
+            });
+        }
+        
+        window.addEventListener('load', function() {
+          requestCamera();
+          
+          Quagga.init({
+            inputStream : {
+              name : "Live",
+              type : "LiveStream",
+              target: document.querySelector('#video')
+            },
+            decoder : {
+              readers : ["ean_reader"]
+            }
+          }, function(err) {
+            if (err) {
+              console.error('Error:', err);
+              return;
+            }
+            console.log('Quagga initialization succeeded');
+            Quagga.start();
+          });
+          
+          Quagga.onDetected(function(result) {
+            console.log('Barcode detected and processed : [' + result.codeResult.code + ']', result);
+            document.querySelector('#prodCode').value = result.codeResult.code;
+            $('#prodCode').trigger('input');
+          });
+        });
+        
+        $(document).ready(function() {
+          $('#prodCode').on('input', function() {
+            console.log('Barcode Scanner detected');
+            var prodCode = $(this).val();
+            $.ajax({
+              url: '/getProdCode/' + prodCode,
+              type: 'GET',
+              dataType: 'json',
+              success: function(response) {
+                if (response.exists) {
+                  $('#nameProd').val(response.nameProd);
+                  $('#buyPrice').val(response.buyPrice);
+                  $('#sellPrice').val(response.sellPrice);
+                  $('#stock').val(response.stock);
+                } else {
+                  $('#nameProd').val('');
+                  $('#buyPrice').val('');
+                  $('#sellPrice').val('');
+                  $('#stock').val('');
+                }
+              }
+            });
+          });
+        });
+      </script>            
     @endpush
 </x-layout.app>

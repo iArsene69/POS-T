@@ -11,41 +11,50 @@ class ProductController extends Controller
     public function index()
     {
         $product = product::all();
-        // Get the current date in the desired format (e.g. Ymd)
-        $date = date('Ymd');
-
-        // Get the latest product code for the current date
-        $latestCode = product::where('prodCode', 'like', $date . '%')->latest('id')->first();
-
-        if ($latestCode) {
-            // Extract the sequence number from the product code and increment it by 1
-            $sequence = intval(substr($latestCode->prodCode, -1)) + 1;
-        } else {
-            // If no product code exists for the current date, start at 1
-            $sequence = 1;
-        }
-
-        // Generate the new product code by concatenating the date prefix, a static string ('PRD' in this case), and the sequence number
-        $newCode = $date . 'PRD' . $sequence;
-
 
         return view('product.index', [
             'product' => $product,
         ]);
     }
 
+    public function checkProduct(Request $request, $prodCode)
+    {
+        $product = product::where('prodCode', $prodCode)->first();
+        if ($product) {
+            $data = [
+                'exists' => true,
+                'nameProd' => $product->nameProd,
+                'buyPrice' => $product->buyPrice,
+                'sellPrice' => $product->sellPrice
+            ];
+        } else {
+            $data = [
+                'exists' => false
+            ];
+        }
+        return response()->json($data);
+    }
+
     public function store(Request $request)
     {
-        $validatedP = Validator::make($request->all(), [
-            'prodCode' => 'required',
-            'nameProd' => 'required',
-            'buyPrice' => 'required',
-            'sellPrice' => 'required',
-            'stock' => 'required',
-        ])->validate();
-
-        
-        $createP = product::create($validatedP);
+        $product = product::where('prodCode', $request->prodCode)->first();
+        if ($product) {
+          $createP =  $product->update([
+                'prodCode' => $request->prodCode,
+                'nameProd' => $request->nameProd,
+                'buyPrice' => $request->buyPrice,
+                'sellPrice' => $request->sellPrice,
+                'stock' => $product->stock + $request->stock
+          ]);
+        } else {
+            $createP = product::create([
+                'prodCode' => $request->prodCode,
+                'nameProd' => $request->nameProd,
+                'buyPrice' => $request->buyPrice,
+                'sellPrice' => $request->sellPrice,
+                'stock' => $request->stock
+            ]);
+        }
 
         if ($createP) {
             session()->flash('success', 'Data saved successfully!');

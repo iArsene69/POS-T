@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
-use RealRashid\SweetAlert\Facades\Alert;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,3 +20,4 @@ Route::get('/', function () {
 
 Route::get('/product', [ProductController::class, 'index'])->name('product.index');
 Route::post('/product/store', [ProductController::class, 'store'])->name('product.store');
+Route::get('/getProdCode/{prodCode}', [ProductController::class, 'checkProduct']);
