@@ -18,8 +18,8 @@
                             <thead>
                                 <tr>
                                     <th>Check</th>
-                                    <th>Product's Name</th>
                                     <th>Product's Code</th>
+                                    <th>Product's Name</th>
                                     <th>Buying Price</th>
                                     <th>Selling Price</th>
                                     <th>Stock</th>
@@ -61,8 +61,8 @@
                                 <div class="col-lg-12 grid-margin">
                                     <div class="form-group">
                                         <label for="exampleInputUsername1">Product's Code</label>
-                                        <input type="text" class="form-control text-light" id="prodCode" name="prodCode"
-                                            value="{{ $prodCode }}">
+                                        <video id="video" width="460" height="230" class="mt-2 mb-2"></video>
+                                        <input type="text" id="prodCode" name="prodCode" placeholder="Product's Code" class="form-control text-light" />
                                     </div>
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Product's Name</label>
@@ -121,10 +121,10 @@
             title: '{{ Session::get('success') }}'
         });
     </script>
-@else
+    @else
     @if (session()->has('errors'))
-        <script>
-            Swal.fire({
+    <script>
+        Swal.fire({
                 toast: true,
                 position: 'top-end',
                 showConfirmButton: false,
@@ -133,8 +133,47 @@
                 icon: 'error',
                 title: '{{ Session::get('errors') }}'
             });
-        </script>
+    </script>
     @endif
-@endif
+    @endif
+    <script>
+        function requestCamera() {
+    navigator.mediaDevices.getUserMedia({ video: true })
+    .then(function(stream) {
+        const video = document.querySelector('#video');
+        video.srcObject = stream;
+        video.play();
+    })
+    .catch(function(err) {
+        console.error('Error:', err);
+    });
+}
+window.addEventListener('load', function() {
+    requestCamera();
+});
+
+Quagga.init({
+    inputStream : {
+        name : "Live",
+        type : "LiveStream",
+        target: document.querySelector('#video')
+    },
+    decoder : {
+        readers : ["ean_reader"]
+    }
+}, function(err) {
+    if (err) {
+        console.error('Error:', err);
+        return;
+    }
+    console.log('Quagga initialization succeeded');
+    Quagga.start();
+});
+
+Quagga.onDetected(function(result) {
+    console.log('Barcode detected and processed : [' + result.codeResult.code + ']', result);
+    document.querySelector('#prodCode').value = result.codeResult.code;
+});
+    </script>
     @endpush
 </x-layout.app>

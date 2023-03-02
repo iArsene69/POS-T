@@ -8,38 +8,49 @@ use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
-    public function index(){
+    public function index()
+    {
         $product = product::all();
-        $prodCode = product::latest()->first();
-        if ($prodCode) {
-            $prodCode = substr($prodCode->prodCode, -1);
-            $newCodeNumber = $prodCode + 1;
-            $prodCode = '000PRD00' . $newCodeNumber;
+        // Get the current date in the desired format (e.g. Ymd)
+        $date = date('Ymd');
+
+        // Get the latest product code for the current date
+        $latestCode = product::where('prodCode', 'like', $date . '%')->latest('id')->first();
+
+        if ($latestCode) {
+            // Extract the sequence number from the product code and increment it by 1
+            $sequence = intval(substr($latestCode->prodCode, -1)) + 1;
         } else {
-            $prodCode = '000PRD001';
+            // If no product code exists for the current date, start at 1
+            $sequence = 1;
         }
+
+        // Generate the new product code by concatenating the date prefix, a static string ('PRD' in this case), and the sequence number
+        $newCode = $date . 'PRD' . $sequence;
+
 
         return view('product.index', [
             'product' => $product,
-            'prodCode' => $prodCode
         ]);
     }
 
-    public function store(Request $request){
-        $validatedP = Validator::make($request->all(),[
-            'prodCode' => 'required', 
+    public function store(Request $request)
+    {
+        $validatedP = Validator::make($request->all(), [
+            'prodCode' => 'required',
             'nameProd' => 'required',
             'buyPrice' => 'required',
             'sellPrice' => 'required',
             'stock' => 'required',
         ])->validate();
 
+        
         $createP = product::create($validatedP);
 
         if ($createP) {
             session()->flash('success', 'Data saved successfully!');
             return redirect()->back();
-        }else{
+        } else {
             session()->flash('errors', 'Data Invalid!');
             return redirect()->back();
         }

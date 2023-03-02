@@ -20,11 +20,7 @@
     <link rel="stylesheet" href="{{ asset('assets/vendors/select2-bootstrap-theme/select2-bootstrap.min.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.5.0/components/button.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="@sweetalert2/theme-borderless/borderless.css">
     <link rel="stylesheet" href="{{ asset('assets/css/sweetalert2/borderless.css') }}">
-
-
-    {{-- <link rel="stylesheet" href="{{ asset('sweetalert2.min.css') }}"> --}}
     <!-- End plugin css for this page -->
     <!-- inject:css -->
     <!-- endinject -->
@@ -85,11 +81,11 @@
     <script src="{{ asset('assets/js/chart.js') }}"></script>
     <script src="{{ asset('assets/vendors/select2/select2.min.js') }}"></script>
     <script src="{{ asset('assets/js/select2.js') }}"></script>
-    {{-- <script src="{{ asset('sweetalert2.min.js') }}"></script> --}}
-    <script src="{{ asset('sweetalert2/dist/sweetalert2.min.js') }}"></script>
     <link rel="script" src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.5.0/semantic.min.js">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <script src="{{ asset('assets/js/sweetalert2.min.js') }}"></script>
+    <script src="{{ asset('assets/js/dist/quagga.js') }}"></script>
+    <script src="{{ asset('assets/js/dist/quagga.min.js') }}"></script>
     @stack('theJS')
 </body>
 
