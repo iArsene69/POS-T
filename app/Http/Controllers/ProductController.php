@@ -11,7 +11,7 @@ class ProductController extends Controller
     public function index()
     {
         $product = product::all();
-
+        
         return view('product.index', [
             'product' => $product,
         ]);
@@ -60,6 +60,27 @@ class ProductController extends Controller
             session()->flash('success', 'Data saved successfully!');
             return redirect()->back();
         } else {
+            session()->flash('errors', 'Data Invalid!');
+            return redirect()->back();
+        }
+    }
+
+    public function update(Request $request){
+        $product = product::where('prodCode', $request->prodCode)->first();
+
+        if ($product) {
+          $updateP = $product->update([
+                'nameProd' => $request->nameProd,
+                'buyPrice' => $request->buyPrice,
+                'sellPrice' => $request->sellPrice,
+                'stock' => $request->stock
+          ]);
+        }
+
+        if ($updateP) {
+            session()->flash('success', 'Data saved successfully!');
+            return redirect()->back();
+        }else {
             session()->flash('errors', 'Data Invalid!');
             return redirect()->back();
         }

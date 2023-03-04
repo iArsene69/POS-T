@@ -34,7 +34,7 @@
                                     <td>{{ $item->sellPrice }}</td>
                                     <td>{{ $item->stock }}</td>
                                     <td>
-                                        <button type="submit" class="btn btn-primary btn-icon"><i class="mdi mdi-pencil-outline icon-sm"></i></button>
+                                        <button type="button" class="btn btn-primary btn-icon" data-bs-target="#modalEd{{ $item->id }}" data-bs-toggle="modal"><i class="mdi mdi-pencil-outline icon-sm"></i></button>
                                         <button type="submit" class="btn btn-danger btn-icon"><i class="mdi mdi-delete icon-sm"></i></button>
                                     </td>
                                 </tr>
@@ -99,17 +99,75 @@
             </div>
         </div>
     </div>
+
+    {{-- Edit Modal --}}
+    @foreach ($product as $prd)
+    <div class="modal fade" id="modalEd{{ $prd->id }}" tabindex="-1" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="modalTitleId"><i class="mdi mdi-table-edit text-warning icon-md"></i> Edit Products</h5>
+                  <button type="button" class="btn btn-danger" data-bs-dismiss="modal" aria-label="Close"><i
+                          class="mdi mdi-window-close"></i></button>
+              </div>
+              <div class="modal-body">
+                  <div class="container-fluid">
+                      <form action="{{ route('product.update') }}" method="post">
+                          @csrf
+                          @method('PUT')
+                          <div class="row">
+                              <div class="col-lg-12 grid-margin">
+                                  <div class="form-group">
+                                      <label for="exampleInputUsername1">Product's Code</label>
+                                      <input type="text" id="prodCode" name="prodCode" placeholder="Product's Code" class="form-control text-dark" value="{{ $prd->prodCode }}" readonly>
+                                  </div>
+                                  <div class="form-group">
+                                      <label for="exampleInputEmail1">Product's Name</label>
+                                      <input type="text" class="form-control text-light" id="nameProd" name="nameProd"
+                                          placeholder="Product's Name" value="{{ $prd->nameProd }}">
+                                  </div>
+                                  <div class="form-group">
+                                      <label for="exampleInputPassword1">Buying Price</label>
+                                      <input type="number" class="form-control text-light" id="buyPrice"
+                                          name="buyPrice" placeholder="Buying Price" value="{{ $prd->buyPrice }}">
+                                  </div>
+                                  <div class="form-group">
+                                      <label for="exampleInputConfirmPassword1">Selling Price</label>
+                                      <input type="number" class="form-control text-light" id="sellPrice"
+                                          name="sellPrice" placeholder="Selling Price" value="{{ $prd->sellPrice }}">
+                                  </div>
+                                  <div class="form-group">
+                                      <label for="exampleInputConfirmPassword1">Stock</label>
+                                      <input type="number" class="form-control text-light" id="stock" name="stock"
+                                          placeholder="Stock" value="{{ $prd->stock }}">
+                                  </div>
+                              </div>
+                          </div>
+                          <div class="modal-footer">
+                              <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                              <button type="submit" class="btn btn-success">Save</button>
+                          </div>
+                      </form>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+    @endforeach
+    
     @push('theJS')
     <script>
         var modalId = document.getElementById('modalId');
     
         modalId.addEventListener('show.bs.modal', function (event) {
-              // Button that triggered the modal
               let button = event.relatedTarget;
-              // Extract info from data-bs-* attributes
               let recipient = button.getAttribute('data-bs-whatever');
+        });
+        var modalEd = document.getElementById('modalEd');
     
-            // Use above variables to manipulate the DOM
+        modalEd.addEventListener('show.bs.modal', function (event) {
+              let button = event.relatedTarget;
+              let recipient = button.getAttribute('data-bs-whatever');
         });
     </script>
     @if(session()->has('success'))
