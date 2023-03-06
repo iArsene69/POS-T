@@ -34,25 +34,31 @@
                                     <td>{{ $item->sellPrice }}</td>
                                     <td>{{ $item->stock }}</td>
                                     <td>
-                                        <button type="button" class="btn btn-primary btn-icon" data-bs-target="#modalEd{{ $item->id }}" data-bs-toggle="modal"><i class="mdi mdi-pencil-outline icon-sm"></i></button>
-                                        <button type="submit" class="btn btn-danger btn-icon"><i class="mdi mdi-delete icon-sm"></i></button>
+                                        <button type="button" class="btn btn-primary btn-icon"
+                                            data-bs-target="#modalEd{{ $item->id }}" data-bs-toggle="modal"><i
+                                                class="mdi mdi-pencil-outline icon-sm"></i></button>
+                                        <button type="button" class="btn btn-danger btn-icon"><i
+                                                class="mdi mdi-delete icon-sm" data-bs-target="#modalDel{{ $item->id }}"
+                                                data-bs-toggle="modal"></i></button>
                                     </td>
                                 </tr>
                                 @endforeach
                             </tbody>
                         </table>
+                        {{ $product->links('vendor.pagination.tailwind') }}
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal -->
+    <!-- Modal New -->
     <div class="modal fade" id="modalId" tabindex="-1" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalTitleId"><i class="mdi mdi-table text-warning icon-md"></i> New Products</h5>
+                    <h5 class="modal-title" id="modalTitleId"><i class="mdi mdi-table text-warning icon-md"></i> New
+                        Products</h5>
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal" aria-label="Close"><i
                             class="mdi mdi-window-close"></i></button>
                 </div>
@@ -65,7 +71,8 @@
                                     <div class="form-group">
                                         <label for="exampleInputUsername1">Product's Code</label>
                                         <video id="video" width="460" height="230" class="mt-2 mb-2"></video>
-                                        <input type="text" id="prodCode" name="prodCode" placeholder="Product's Code" class="form-control text-light" />
+                                        <input type="text" id="prodCode" name="prodCode" placeholder="Product's Code"
+                                            class="form-control text-light" />
                                     </div>
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Product's Name</label>
@@ -102,59 +109,96 @@
 
     {{-- Edit Modal --}}
     @foreach ($product as $prd)
-    <div class="modal fade" id="modalEd{{ $prd->id }}" tabindex="-1" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-          <div class="modal-content">
-              <div class="modal-header">
-                  <h5 class="modal-title" id="modalTitleId"><i class="mdi mdi-table-edit text-warning icon-md"></i> Edit Products</h5>
-                  <button type="button" class="btn btn-danger" data-bs-dismiss="modal" aria-label="Close"><i
-                          class="mdi mdi-window-close"></i></button>
-              </div>
-              <div class="modal-body">
-                  <div class="container-fluid">
-                      <form action="{{ route('product.update') }}" method="post">
-                          @csrf
-                          @method('PUT')
-                          <div class="row">
-                              <div class="col-lg-12 grid-margin">
-                                  <div class="form-group">
-                                      <label for="exampleInputUsername1">Product's Code</label>
-                                      <input type="text" id="prodCode" name="prodCode" placeholder="Product's Code" class="form-control text-dark" value="{{ $prd->prodCode }}" readonly>
-                                  </div>
-                                  <div class="form-group">
-                                      <label for="exampleInputEmail1">Product's Name</label>
-                                      <input type="text" class="form-control text-light" id="nameProd" name="nameProd"
-                                          placeholder="Product's Name" value="{{ $prd->nameProd }}">
-                                  </div>
-                                  <div class="form-group">
-                                      <label for="exampleInputPassword1">Buying Price</label>
-                                      <input type="number" class="form-control text-light" id="buyPrice"
-                                          name="buyPrice" placeholder="Buying Price" value="{{ $prd->buyPrice }}">
-                                  </div>
-                                  <div class="form-group">
-                                      <label for="exampleInputConfirmPassword1">Selling Price</label>
-                                      <input type="number" class="form-control text-light" id="sellPrice"
-                                          name="sellPrice" placeholder="Selling Price" value="{{ $prd->sellPrice }}">
-                                  </div>
-                                  <div class="form-group">
-                                      <label for="exampleInputConfirmPassword1">Stock</label>
-                                      <input type="number" class="form-control text-light" id="stock" name="stock"
-                                          placeholder="Stock" value="{{ $prd->stock }}">
-                                  </div>
-                              </div>
-                          </div>
-                          <div class="modal-footer">
-                              <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
-                              <button type="submit" class="btn btn-success">Save</button>
-                          </div>
-                      </form>
-                  </div>
-              </div>
-          </div>
-      </div>
-  </div>
+    <div class="modal fade" id="modalEd{{ $prd->id }}" tabindex="-1" role="dialog" aria-labelledby="modalTitleId"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitleId"><i class="mdi mdi-table-edit text-warning icon-md"></i>
+                        Edit Products</h5>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" aria-label="Close"><i
+                            class="mdi mdi-window-close"></i></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <form action="{{ route('product.update') }}" method="post">
+                            @csrf
+                            @method('PUT')
+                            <div class="row">
+                                <div class="col-lg-12 grid-margin">
+                                    <div class="form-group">
+                                        <label for="exampleInputUsername1">Product's Code</label>
+                                        <input type="text" id="prodCode" name="prodCode" placeholder="Product's Code"
+                                            class="form-control text-dark" value="{{ $prd->prodCode }}" readonly>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Product's Name</label>
+                                        <input type="text" class="form-control text-light" id="nameProd" name="nameProd"
+                                            placeholder="Product's Name" value="{{ $prd->nameProd }}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword1">Buying Price</label>
+                                        <input type="number" class="form-control text-light" id="buyPrice"
+                                            name="buyPrice" placeholder="Buying Price" value="{{ $prd->buyPrice }}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputConfirmPassword1">Selling Price</label>
+                                        <input type="number" class="form-control text-light" id="sellPrice"
+                                            name="sellPrice" placeholder="Selling Price" value="{{ $prd->sellPrice }}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputConfirmPassword1">Stock</label>
+                                        <input type="number" class="form-control text-light" id="stock" name="stock"
+                                            placeholder="Stock" value="{{ $prd->stock }}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-success">Save</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     @endforeach
-    
+
+    {{-- Delete Modal --}}
+    @foreach ($product as $prd)
+    <div class="modal fade" id="modalDel{{ $prd->id }}" tabindex="-1" role="dialog" aria-labelledby="modalTitleId"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitleId"><i class="mdi mdi-table-edit text-warning icon-md"></i>
+                        Edit Products</h5>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal" aria-label="Close"><i
+                            class="mdi mdi-window-close"></i></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <form action="{{ route('product.delete', $prd->id) }}" method="post">
+                            @csrf
+                            @method('DELETE')
+                            <div class="row">
+                                <div class="col-lg-12 grid-margin">
+                                    <h4 class="display-4">Do you want to delete this data?</h4>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-success">Delete</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endforeach
+
     @push('theJS')
     <script>
         var modalId = document.getElementById('modalId');
@@ -166,6 +210,12 @@
         var modalEd = document.getElementById('modalEd');
     
         modalEd.addEventListener('show.bs.modal', function (event) {
+              let button = event.relatedTarget;
+              let recipient = button.getAttribute('data-bs-whatever');
+        });
+        var modalDel = document.getElementById('modalDel');
+    
+        modalDel.addEventListener('show.bs.modal', function (event) {
               let button = event.relatedTarget;
               let recipient = button.getAttribute('data-bs-whatever');
         });
@@ -198,6 +248,20 @@
     @endif
     @endif
     <script>
+        var context = new AudioContext();
+        var soundBuffer;
+        var request = new XMLHttpRequest();
+        request.open('GET', "{{ asset('assets/sound/dor.mp3') }}", true);
+        request.responseType = 'arraybuffer';
+      
+        request.onload = function() {
+          context.decodeAudioData(request.response, function(buffer) {
+            soundBuffer = buffer;
+          });
+        };
+      
+        request.send();
+      
         function requestCamera() {
           navigator.mediaDevices.getUserMedia({ video: true })
             .then(function(stream) {
@@ -209,18 +273,18 @@
               console.error('Error:', err);
             });
         }
-        
+      
         window.addEventListener('load', function() {
           requestCamera();
-          
+      
           Quagga.init({
-            inputStream : {
-              name : "Live",
-              type : "LiveStream",
+            inputStream: {
+              name: "Live",
+              type: "LiveStream",
               target: document.querySelector('#video')
             },
-            decoder : {
-              readers : ["ean_reader"]
+            decoder: {
+              readers: ["ean_reader"]
             }
           }, function(err) {
             if (err) {
@@ -230,14 +294,21 @@
             console.log('Quagga initialization succeeded');
             Quagga.start();
           });
-          
+      
           Quagga.onDetected(function(result) {
             console.log('Barcode detected and processed : [' + result.codeResult.code + ']', result);
             document.querySelector('#prodCode').value = result.codeResult.code;
             $('#prodCode').trigger('input');
+      
+            context.resume().then(function() {
+              var source = context.createBufferSource();
+              source.buffer = soundBuffer;
+              source.connect(context.destination);
+              source.start();
+            });
           });
         });
-        
+      
         $(document).ready(function() {
           $('#prodCode').on('input', function() {
             console.log('Barcode Scanner detected');
@@ -262,6 +333,6 @@
             });
           });
         });
-      </script>            
+    </script>
     @endpush
 </x-layout.app>

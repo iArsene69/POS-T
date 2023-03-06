@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
     public function index()
     {
-        $product = product::all();
+        $product = DB::table('products')->paginate(5);
         
         return view('product.index', [
             'product' => $product,
@@ -38,6 +39,15 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $product = product::where('prodCode', $request->prodCode)->first();
+
+        $validatedP = Validator::make($request->all(), [
+            'prodCode' => 'required',
+            'nameProd' => 'required',
+            'buyPrice' => 'required',
+            'sellPrice' => 'required',
+            'stock' => 'required'
+        ]);
+
         if ($product) {
           $createP =  $product->update([
                 'prodCode' => $request->prodCode,
@@ -68,6 +78,13 @@ class ProductController extends Controller
     public function update(Request $request){
         $product = product::where('prodCode', $request->prodCode)->first();
 
+        $validatedP = Validator::make($request->all(), [
+            'nameProd' => 'required',
+            'buyPrice' => 'required',
+            'sellPrice' => 'required',
+            'stock' => 'required'
+        ]);
+
         if ($product) {
           $updateP = $product->update([
                 'nameProd' => $request->nameProd,
@@ -78,11 +95,28 @@ class ProductController extends Controller
         }
 
         if ($updateP) {
-            session()->flash('success', 'Data saved successfully!');
+            session()->flash('success', 'Data updated successfully!');
             return redirect()->back();
         }else {
             session()->flash('errors', 'Data Invalid!');
             return redirect()->back();
         }
+    }
+
+    public function destroy($id){
+        $product = product::where('id', $id)->first();
+
+        if ($product) {
+          $deleteP = $product->delete();
+        }
+
+        if ($deleteP) {
+            session()->flash('success', 'Data successfully deleted!');
+            return redirect()->back();
+        } else {
+            session()->flash('errors', 'Data Invalid!');
+            return redirect()->back();
+        }
+        
     }
 }
