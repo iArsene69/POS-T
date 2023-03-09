@@ -9,14 +9,21 @@ use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $product = DB::table('products')->paginate(5);
-        
-        return view('product.index', [
-            'product' => $product,
-        ]);
+        $keyword = $request->input('keyword');
+        $product = product::query();
+
+        if ($keyword) {
+            $product = $product->where('prodCode', 'like', "%{$keyword}%")
+                ->orWhere('nameProd', 'like', "%{$keyword}%");
+        }
+
+        $product = $product->paginate(5);
+
+        return view('product.index', compact('product'));
     }
+
 
     public function checkProduct(Request $request, $prodCode)
     {
@@ -49,13 +56,13 @@ class ProductController extends Controller
         ]);
 
         if ($product) {
-          $createP =  $product->update([
+            $createP = $product->update([
                 'prodCode' => $request->prodCode,
                 'nameProd' => $request->nameProd,
                 'buyPrice' => $request->buyPrice,
                 'sellPrice' => $request->sellPrice,
                 'stock' => $product->stock + $request->stock
-          ]);
+            ]);
         } else {
             $createP = product::create([
                 'prodCode' => $request->prodCode,
@@ -75,7 +82,8 @@ class ProductController extends Controller
         }
     }
 
-    public function update(Request $request){
+    public function update(Request $request)
+    {
         $product = product::where('prodCode', $request->prodCode)->first();
 
         $validatedP = Validator::make($request->all(), [
@@ -86,28 +94,29 @@ class ProductController extends Controller
         ]);
 
         if ($product) {
-          $updateP = $product->update([
+            $updateP = $product->update([
                 'nameProd' => $request->nameProd,
                 'buyPrice' => $request->buyPrice,
                 'sellPrice' => $request->sellPrice,
                 'stock' => $request->stock
-          ]);
+            ]);
         }
 
         if ($updateP) {
             session()->flash('success', 'Data updated successfully!');
             return redirect()->back();
-        }else {
+        } else {
             session()->flash('errors', 'Data Invalid!');
             return redirect()->back();
         }
     }
 
-    public function destroy($id){
+    public function destroy($id)
+    {
         $product = product::where('id', $id)->first();
 
         if ($product) {
-          $deleteP = $product->delete();
+            $deleteP = $product->delete();
         }
 
         if ($deleteP) {
@@ -117,6 +126,6 @@ class ProductController extends Controller
             session()->flash('errors', 'Data Invalid!');
             return redirect()->back();
         }
-        
+
     }
 }

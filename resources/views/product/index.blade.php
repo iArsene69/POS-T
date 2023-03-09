@@ -4,13 +4,26 @@
             <div class="card">
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-md-10">
-                            <h4 class="card-title"><i class="mdi mdi-store-24-hour text-danger icon-md"></i> Product
-                            </h4>
-                        </div>
-                        <div class="col-md-2">
-                            <button type="button" class="btn btn-info" data-bs-toggle="modal"
+                        <div class="col-md-8">
+                            <h3 class="card-title"><i class="mdi mdi-store-24-hour text-danger icon-md"></i> Product
+                            </h3>
+                            <button type="button" class="btn btn-info mb-3 ml-5" data-bs-toggle="modal"
                                 data-bs-target="#modalId"><i class="mdi mdi-plus"></i> New</button>
+                        </div>
+                        <div class="col-md-4">
+                            <form action="{{ route('product.index') }}" method="get">
+                                @csrf
+                                <div class="row">
+                                    <div class="col-sm-9">
+                                        <input type="text" class="form-control text-light" name="keyword" id="keyword"
+                                            placeholder="Search Products...">
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <button type="submit" class="btn btn-success btn-icon"><i
+                                                class="mdi mdi-magnify icon-sm"></i></button>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
                     <div class="table-responsive">
@@ -45,7 +58,7 @@
                                 @endforeach
                             </tbody>
                         </table>
-                        {{ $product->links('vendor.pagination.tailwind') }}
+                        {{ $product->links('pagination::bootstrap-5') }}
                     </div>
                 </div>
             </div>
@@ -70,7 +83,7 @@
                                 <div class="col-lg-12 grid-margin">
                                     <div class="form-group">
                                         <label for="exampleInputUsername1">Product's Code</label>
-                                        <video id="video" width="460" height="230" class="mt-2 mb-2"></video>
+                                        <video id="video" width="460" height="144" class="mt-2 mb-2"></video>
                                         <input type="text" id="prodCode" name="prodCode" placeholder="Product's Code"
                                             class="form-control text-light" />
                                     </div>
